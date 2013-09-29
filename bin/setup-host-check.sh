@@ -40,10 +40,12 @@ echo "Verifying Linux host distribution"
 get_host_type host
 
 if [ "$host" != "lucid" -a "$host" != "precise" ]; then
-    echo "Unsupported host machine, only Ubuntu 10.04 LTS and Ubuntu 12.04 LTS
-are supported"
-    exit 1
+    echo "Unsupported host machine, only Ubuntu 10.04 LTS and Ubuntu 12.04 LTS are supported"
+    echo "Continuing anyway!"
+    echo "--------------------------------------------------------------------------------"
+    echo
+else
+    echo "Ubuntu 10.04 LTS or Ubuntu 12.04 LTS is being used, continuing.."
+    echo "--------------------------------------------------------------------------------"
+    echo
 fi
-echo "Ubuntu 10.04 LTS or Ubuntu 12.04 LTS is being used, continuing.."
-echo "--------------------------------------------------------------------------------"
-echo
