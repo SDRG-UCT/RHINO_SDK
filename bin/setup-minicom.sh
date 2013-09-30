@@ -60,7 +60,7 @@ on your setup.
 
 EOM
 
-portdefault=/dev/ttyS0
+portdefault=/dev/ttyUSB2
 
 echo ""
 echo "NOTE: For boards with a built-in USB to Serial adapter please press"
