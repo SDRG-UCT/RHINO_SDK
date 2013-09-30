@@ -189,17 +189,17 @@ u-boot-spl_clean: u-boot_clean
 u-boot-spl_install: u-boot_install
 
 u-boot:
-	$(MAKE) -C $(TI_SDK_PATH)/board-support/u-boot-* CROSS_COMPILE=$(CROSS_COMPILE) $(UBOOT_MACHINE)
-	$(MAKE) -C $(TI_SDK_PATH)/board-support/u-boot-* CROSS_COMPILE=$(CROSS_COMPILE)
+	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE) $(UBOOT_MACHINE)
+	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE)
 
 u-boot_clean:
-	$(MAKE) -C $(TI_SDK_PATH)/board-support/u-boot-* CROSS_COMPILE=$(CROSS_COMPILE) clean
+	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE) clean
 
 u-boot_install:
 	install -d $(DESTDIR)/boot
-	install $(TI_SDK_PATH)/board-support/u-boot-*/u-boot.img $(DESTDIR)/boot
-	install $(TI_SDK_PATH)/board-support/u-boot-*/MLO $(DESTDIR)/boot
-	install $(TI_SDK_PATH)/board-support/u-boot-*/u-boot.map $(DESTDIR)/boot
+	install $(RHINO_SDK_PATH)/firmware/am3517/u-boot/u-boot.img $(DESTDIR)/boot
+	install $(RHINO_SDK_PATH)/firmware/am3517/u-boot/MLO $(DESTDIR)/boot
+	install $(RHINO_SDK_PATH)/firmware/am3517/u-boot/u-boot.map $(DESTDIR)/boot
 # Quick Playground build targets
 quick-playground:
 	@echo =================================
