@@ -33,7 +33,8 @@
 entry_header() {
 cat << EOF
 -------------------------------------------------------------------------------
-TISDK setup script
+RHINOSDK setup script
+Adapted from TISDK setup script -> www.ti.com
 This script will set up your development host for SDK development.
 Parts of this script require administrator priviliges (sudo access).
 -------------------------------------------------------------------------------
@@ -43,13 +44,14 @@ EOF
 exit_footer() {
 cat << EOF
 -------------------------------------------------------------------------------
-TISDK setup completed!
-Please continue reading the Software Developer's Guide for more information on
-how to develop software on the EVM
+RHINO_SDK setup completed successfully!
+Congratulations!
+http://www.sdrg.ee.uct.ac.za/
 -------------------------------------------------------------------------------
 EOF
 }
 
+rootdirdefault=$PWD
 cwd=`dirname $0`
 # Minimum major Linux version for running add-to-group script
 min_ver_upper=12
@@ -74,6 +76,20 @@ else
     echo "setup-host-check.sh does not exist in the bin directory"
     exit 1
 fi
+
+echo
+echo "--------------------------------------------------------------------------------"
+echo "Which directory do you want to use as your RHINO_SDK_PATH(if this directory does not exist it will be created)"
+read -p "[ $rootdirdefault ] " rdir
+
+if [ ! -n "$rdir" ]; then
+    rdir=$rootdirdefault
+fi
+
+sed -i "s=export RHINO_SDK_PATH\=.*$=export RHINO_SDK_PATH\=$rdir=g" $cwd/Rules.make
+
+echo "--------------------------------------------------------------------------------"
+
 
 # Only execute if the Linux version is above 12.xx
 if [ "$host_upper" -gt "$min_ver_upper" -o "$host_upper" -eq "$min_ver_upper" ]; then
