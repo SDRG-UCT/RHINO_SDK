@@ -41,7 +41,8 @@ dstdefault2=$SDKinstall/targetNFS
 echo "--------------------------------------------------------------------------------"
 echo "In which directory do you want to install the target filesystem?(if this directory does not exist it will be created)"
 echo "Select an option or type in the directory"
-read -p "[1 $dstdefault1], [2 $dstdefault2 ] " dst 
+echo "(1) $dstdefault1 (2) $dstdefault2"
+read -p "[1] " dst 
 
 if [ $dst=1 ]; then
     dst=$dstdefault1
