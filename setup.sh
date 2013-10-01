@@ -79,7 +79,7 @@ fi
 
 echo
 echo "--------------------------------------------------------------------------------"
-echo "Which directory do you want to use as your RHINO_SDK_PATH(if this directory does not exist it will be created)"
+echo "Which directory do you want to use as your RHINO_SDK_PATH?(if this directory does not exist it will be created)"
 read -p "[ $rootdirdefault ] " rdir
 
 if [ ! -n "$rdir" ]; then
