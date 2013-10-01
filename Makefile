@@ -189,17 +189,24 @@ u-boot-spl_clean: u-boot_clean
 u-boot-spl_install: u-boot_install
 
 u-boot:
-	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE) $(UBOOT_MACHINE)
-	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE)
+	@echo =================================
+	@echo      Building u-boot
+	@echo =================================
+	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE) O=$(BUILD_DIR)/u-boot $(UBOOT_MACHINE)
+	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE) O=$(BUILD_DIR)/u-boot
 
 u-boot_clean:
 	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE) clean
+	@-[ ! -d $(BUILD_DIR)/u-boot ] && echo 'Directory $(BUILD_DIR)/u-boot does not exist' || rm -r $(BUILD_DIR)/u-boot
 
 u-boot_install:
+	@echo =================================
+	@echo       Installing u-boot
+	@echo =================================
 	install -d $(DESTDIR)/boot
-	install $(RHINO_SDK_PATH)/firmware/am3517/u-boot/u-boot.img $(DESTDIR)/boot
-	install $(RHINO_SDK_PATH)/firmware/am3517/u-boot/MLO $(DESTDIR)/boot
-	install $(RHINO_SDK_PATH)/firmware/am3517/u-boot/u-boot.map $(DESTDIR)/boot
+	install $(BUILD_DIR)/u-boot/u-boot.img $(DESTDIR)/boot
+	install $(BUILD_DIR)/u-boot/MLO $(DESTDIR)/boot
+	install $(BUILD_DIR)/u-boot/u-boot.map $(DESTDIR)/boot
 # Quick Playground build targets
 quick-playground:
 	@echo =================================
