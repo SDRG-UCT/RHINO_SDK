@@ -36,6 +36,20 @@ cwd=`dirname $0`
 tftpcfg=/etc/xinetd.d/tftp
 tftprootdefault=/tftpboot
 
+if [ -f $cwd/../.targetfs ]; then
+    rootpath=`cat $cwd/../.targetfs`
+else
+    echo "Where is your target filesystem extracted?"
+    read -p "[ ${HOME}/targetNFS ]" rootpath
+
+    if [ ! -n "$rootpath" ]; then
+        rootpath="${HOME}/targetNFS"
+    fi
+    echo
+fi
+
+imageinstalldefault=$rootpath/boot
+
 tftp() {
     echo "
 service tftp
@@ -85,21 +99,32 @@ else
     check_status
 fi
 
+echo "--------------------------------------------------------------------------------"
+echo "Which directory will your Linux and u-boot images be installed to?(if this directory does not exist it will be created for you)"
+read -p "[ $imageinstalldefault ] " imageinstallroot
+
+if [ ! -n "$imageinstallroot" ]; then
+    imageinstallroot=$imageinstalldefault
+fi
+echo "--------------------------------------------------------------------------------"
+
 platform=`cat $cwd/../Rules.make | grep -e "^PLATFORM=" | cut -d= -f2`
-uimage="uImage-""$platform"""
+uimage="uImage"
+uboot="u-boot.img"
+mlo="MLO"
 uimagesrc=`ls -1 $cwd/../firmware/am3517/prebuilt-stable/$uimage`
-if [ -f $tftproot/$uimage ]; then
+if [ -f $imageinstallroot/$uimage ]; then
     echo
-    echo "$tftproot/$uimage already exists. The existing installed file can be renamed and saved under the new name."
+    echo "$imageinstallroot/$uimage already exists. The existing installed file can be renamed and saved under the new name."
     echo "(r) rename (o) overwrite (s) skip copy "
     read -p "[r] " exists
     case "$exists" in
       s) echo "Skipping copy of $uimage, existing version will be used"
          ;;
-      o) sudo cp $uimagesrc $tftproot
+      o) sudo cp $uimagesrc $imageinstallroot
          check_status
          echo
-         echo "Successfully overwritten $uimage in tftp root directory $tftproot"
+         echo "Successfully overwritten $uimage in Image install directory $imageinstallroot"
          ;;
       *) dte="`date +%m%d%Y`_`date +%H`.`date +%M`"
          echo "New name for existing uImage: "
@@ -107,23 +132,120 @@ if [ -f $tftproot/$uimage ]; then
          if [ ! -n "$newname" ]; then
              newname="$uimage.$dte"
          fi
-         sudo mv "$tftproot/$uimage" "$tftproot/$newname"
+         sudo mv "$imageinstallroot/$uimage" "$imageinstallroot/$newname"
          check_status
-         sudo cp $uimagesrc $tftproot
+         sudo cp $uimagesrc $imageinstallroot
          check_status
          echo
-         echo "Successfully copied $uimage to tftp root directory $tftproot as $newname"
+         echo "Successfully copied $uimage to Image install directory $imageinstallroot as $newname"
          ;;
     esac
 else
-    sudo cp $uimagesrc $tftproot
+    sudo cp $uimagesrc $imageinstallroot
     check_status
     echo
-    echo "Successfully copied $uimage to tftp root directory $tftproot"
+    echo "Successfully copied $uimage to Image install directory $imageinstallroot"
 fi
 
 echo
+if [ -f $tftproot/$uimage ]; then
+    echo "Symbolic Link $tftproot/$uimage already exists and will be replaced."
+    sudo rm "$tftproot/$uimage"
+fi
+sudo ln -s "$imageinstallroot/$uimage" "$tftproot/$uimage"
+check_status
+echo "Successfully created symbolic link to $imageinstallroot/$uimage in directory $tftproot"
+
+ubootsrc=`ls -1 $cwd/../firmware/am3517/prebuilt-stable/$uboot`
+if [ -f $imageinstallroot/$uboot ]; then
+    echo
+    echo "$imageinstallroot/$uboot already exists. The existing installed file can be renamed and saved under the new name."
+    echo "(r) rename (o) overwrite (s) skip copy "
+    read -p "[r] " exists
+    case "$exists" in
+      s) echo "Skipping copy of $uboot, existing version will be used"
+         ;;
+      o) sudo cp $ubootsrc $imageinstallroot
+         check_status
+         echo
+         echo "Successfully overwritten $uboot in Image install directory $imageinstallroot"
+         ;;
+      *) dte="`date +%m%d%Y`_`date +%H`.`date +%M`"
+         echo "New name for existing uImage: "
+         read -p "[ $uboot.$dte ]" newname
+         if [ ! -n "$newname" ]; then
+             newname="$uboot.$dte"
+         fi
+         sudo mv "$imageinstallroot/$uboot" "$imageinstallroot/$newname"
+         check_status
+         sudo cp $ubootsrc $imageinstallroot
+         check_status
+         echo
+         echo "Successfully copied $uboot to Image install directory $imageinstallroot as $newname"
+         ;;
+    esac
+else
+    sudo cp $ubootsrc $imageinstallroot
+    check_status
+    echo
+    echo "Successfully copied $uboot to Image install directory $imageinstallroot"
+fi
+
+echo
+if [ -f $tftproot/$uboot ]; then
+    echo "Symbolic Link $tftproot/$uboot already exists and will be replaced."
+    sudo rm "$tftproot/$uboot"
+fi
+sudo ln -s "$imageinstallroot/$uboot" "$tftproot/$uboot"
+check_status
+echo "Successfully created symbolic link to $imageinstallroot/$uboot in directory $tftproot"
+
+mlosrc=`ls -1 $cwd/../firmware/am3517/prebuilt-stable/$mlo`
+if [ -f $imageinstallroot/$mlo ]; then
+    echo
+    echo "$imageinstallroot/$mlo already exists. The existing installed file can be renamed and saved under the new name."
+    echo "(r) rename (o) overwrite (s) skip copy "
+    read -p "[r] " exists
+    case "$exists" in
+      s) echo "Skipping copy of $mlo, existing version will be used"
+         ;;
+      o) sudo cp $mlosrc $imageinstallroot
+         check_status
+         echo
+         echo "Successfully overwritten $mlo in Image install directory $imageinstallroot"
+         ;;
+      *) dte="`date +%m%d%Y`_`date +%H`.`date +%M`"
+         echo "New name for existing uImage: "
+         read -p "[ $mlo.$dte ]" newname
+         if [ ! -n "$newname" ]; then
+             newname="$mlo.$dte"
+         fi
+         sudo mv "$imageinstallroot/$mlo" "$imageinstallroot/$newname"
+         check_status
+         sudo cp $mlosrc $imageinstallroot
+         check_status
+         echo
+         echo "Successfully copied $mlo to Image install directory $imageinstallroot as $newname"
+         ;;
+    esac
+else
+    sudo cp $mlosrc $imageinstallroot
+    check_status
+    echo
+    echo "Successfully copied $mlo to Image install directory $imageinstallroot"
+fi
+
+echo
+if [ -f $tftproot/$mlo ]; then
+    echo "Symbolic Link $tftproot/$mlo already exists and will be replaced."
+    sudo rm "$tftproot/$mlo"
+fi
+sudo ln -s "$imageinstallroot/$mlo" "$tftproot/$mlo"
+check_status
+echo "Successfully created symbolic link to $imageinstallroot/$mlo in directory $tftproot"
+
 if [ -f $tftpcfg ]; then
+    echo
     echo "$tftpcfg already exists.."
 
     #Use = instead of == for POSIX and dash shell compliance
@@ -142,9 +264,9 @@ fi
 
 echo
 echo "Restarting tftp server"
-sudo /etc/init.d/xinetd stop
+sudo service xinetd stop
 check_status
 sleep 1
-sudo /etc/init.d/xinetd start
+sudo service xinetd start
 check_status
 echo "--------------------------------------------------------------------------------"
