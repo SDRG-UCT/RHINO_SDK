@@ -1,21 +1,22 @@
 #platform
-PLATFORM=am3517-evm
+PLATFORM=rhino
 
 #Architecture
 ARCH=armv7a
 
 #u-boot machine
-UBOOT_MACHINE=am3517_evm_config
+UBOOT_MACHINE=rhino_config
+#UBOOT_MACHINE=am3517_evm_config
 
-#Points to the root of the TI SDK
-export TI_SDK_PATH=/home/mbridges/ti-sdk-am3517-evm-06.00.00.00
+#Points to the root of the RHINO SDK
+export RHINO_SDK_PATH=__RHINO_SDK_PATH
 
 #root of the target file system for installing applications
 DESTDIR=__DESTDIR__
 
 #Points to the root of the Linux libraries and headers matching the
 #demo file system.
-export LINUX_DEVKIT_PATH=$(TI_SDK_PATH)/linux-devkit
+export LINUX_DEVKIT_PATH=$(RHINO_SDK_PATH)/linux-devkit
 
 #Cross compiler prefix
 export CROSS_COMPILE=$(LINUX_DEVKIT_PATH)/sysroots/i686-arago-linux/usr/bin/arm-linux-gnueabihf-
@@ -27,7 +28,10 @@ export CC=$(CROSS_COMPILE)gcc
 #Location of environment-setup file
 export ENV_SETUP=$(LINUX_DEVKIT_PATH)/environment-setup
 
+#Location of build Directory
+export BUILD_DIR=$(RHINO_SDK_PATH)/tmp/build
+
 #The directory that points to the SDK kernel source tree
-LINUXKERNEL_INSTALL_DIR=$(TI_SDK_PATH)/board-support/linux-2.6.37-psp04.02.00.07
+LINUXKERNEL_INSTALL_DIR=$(RHINO_SDK_PATH)/firmware/am3517/os/borph
 
 CFLAGS= -march=armv7-a    -marm -mthumb-interwork -mfloat-abi=hard -mfpu=neon -mtune=cortex-a8
