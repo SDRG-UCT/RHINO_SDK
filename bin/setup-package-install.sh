@@ -53,7 +53,7 @@ cwd=`dirname $0`
 
 entry_header
 
-packages_to_install="xinetd tftpd nfs-kernel-server minicom build-essential libncurses5-dev uboot-mkimage autoconf automake"
+packages_to_install="xinetd tftpd nfs-kernel-server minicom build-essential libncurses5-dev u-boot-tools autoconf automake"
 cmd="sudo apt-get install "
 
 # Check and only install the missing packages
