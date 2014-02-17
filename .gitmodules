@@ -4,3 +4,6 @@
 [submodule "firmware/am3517/rhino_borph"]
 	path = firmware/am3517/rhino_borph
 	url = https://github.com/SDRG-UCT/rhino_borph.git
+[submodule "firmware/am3517/source"]
+	path = firmware/am3517/source
+	url = git@github.com:SDRG-UCT/rhino_borph.git
