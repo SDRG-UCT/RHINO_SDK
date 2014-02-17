@@ -1,7 +1,7 @@
 -include Rules.make
 
-all: linux u-boot-spl v-examples 
-clean: linux_clean u-boot-spl_clean 
+all: linux u-boot-spl utils
+clean: linux_clean u-boot-spl_clean utils_clean 
 install: linux_install u-boot-spl_install 
 # Kernel build targets
 linux:
@@ -29,6 +29,19 @@ linux_clean:
 	@echo =================================
 	$(MAKE) -C $(LINUXKERNEL_INSTALL_DIR) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) mrproper
 	@-[ ! -d $(BUILD_DIR)/linux ] && echo 'Directory $(BUILD_DIR)/linux does not exist' || rm -r $(BUILD_DIR)/linux
+# Make Rules for RHINO Utils
+utils:
+	@echo ===============================
+	@echo      Building RHINO Utils
+	@echo ===============================
+	$(MAKE) -C $(LINUXKERNEL_INSTALL_DIR)/../utils/util ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) O=$(BUILD_DIR)/utils
+
+utils_clean:
+	@echo =============================
+	@echo      Cleaning RHINO Utils
+	@echo =============================
+	$(MAKE) -C $(LINUXKERNEL_INSTALL_DIR)/../utils/util ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) clean
+
 # Make Rules for matrix-gui project
 matrix-gui:
 	@echo =============================
@@ -194,11 +207,14 @@ u-boot:
 	@echo =================================
 	@echo      Building u-boot
 	@echo =================================
-	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE) O=$(BUILD_DIR)/u-boot $(UBOOT_MACHINE)
-	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE) O=$(BUILD_DIR)/u-boot
+	$(MAKE) -C $(UBOOT_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) O=$(BUILD_DIR)/u-boot $(UBOOT_MACHINE)
+	$(MAKE) -C $(UBOOT_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) O=$(BUILD_DIR)/u-boot
 
 u-boot_clean:
-	$(MAKE) -C $(RHINO_SDK_PATH)/firmware/am3517/u-boot CROSS_COMPILE=$(CROSS_COMPILE) clean
+	@echo =================================
+	@echo      Cleaning u-boot
+	@echo =================================
+	$(MAKE) -C $(UBOOT_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) clean
 	@-[ ! -d $(BUILD_DIR)/u-boot ] && echo 'Directory $(BUILD_DIR)/u-boot does not exist' || rm -r $(BUILD_DIR)/u-boot
 
 u-boot_install:

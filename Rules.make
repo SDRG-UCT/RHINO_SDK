@@ -1,15 +1,15 @@
 #platform
 PLATFORM=rhino
+#PLATFORM=am3517_evm
 
 #Architecture
 ARCH=armv7a
 
 #u-boot machine
-UBOOT_MACHINE=rhino_config
-#UBOOT_MACHINE=am3517_evm_config
+UBOOT_MACHINE=$(PLATFORM)_config
 
 #Points to the root of the RHINO SDK
-export RHINO_SDK_PATH=__RHINO_SDK_PATH
+export RHINO_SDK_PATH=__RHINO_SDK_PATH__
 
 #root of the target file system for installing applications
 DESTDIR=__DESTDIR__
@@ -31,7 +31,11 @@ export ENV_SETUP=$(LINUX_DEVKIT_PATH)/environment-setup
 #Location of build Directory
 export BUILD_DIR=$(RHINO_SDK_PATH)/tmp/build
 
+#The directory that points to the u-boot source tree
+UBOOT_SOURCE_PATH=$(RHINO_SDK_PATH)/firmware/am3517/source/u-boot
+
 #The directory that points to the SDK kernel source tree
-LINUXKERNEL_INSTALL_DIR=$(RHINO_SDK_PATH)/firmware/am3517/os/borph
+LINUXKERNEL_INSTALL_DIR=$(RHINO_SDK_PATH)/firmware/am3517/source/borph
+
 
 CFLAGS= -march=armv7-a    -marm -mthumb-interwork -mfloat-abi=hard -mfpu=neon -mtune=cortex-a8
